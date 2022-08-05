@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
+
+// Middlewares
 import { validarCampos } from '../middlewares/validar-campos.js';
+import { validarJWT } from '../middlewares/validar-JWT.js';
+import { adminRole, asignaRole } from '../middlewares/validar-roles.js';
+
 import { emailValido, roleValido, idValidoPorUuario } from '../helpers/db-validators.js';
 import { 
     usuariosGet, 
@@ -25,18 +30,23 @@ const desdePginacion = [ query('desde', 'Desde debe ser un valor numérico').isN
 router.get('/', limitePginacion, desdePginacion, validarCampos , usuariosGet );
 
 
-router.post('/', validacionNombre ,
-                validacionEmail ,
-                validacionPassword ,
-                validacionRole ,
-                validarCampos ,
+router.post('/', validacionNombre,
+                validacionEmail,
+                validacionPassword,
+                validacionRole,
+                validarCampos,
                 usuariosPost );
 
 router.put('/:id', validacionID, validacionRole , validarCampos ,usuariosPut );
 
 router.patch('/', usuariosPatch );
 
-router.delete('/:id', validacionID , validarCampos ,usuariosDelete );
+router.delete('/:id', validarJWT, 
+                    //adminRole,
+                    asignaRole('ADMIN_ROLE', 'USER_ROLE'),
+                    validacionID ,
+                    validarCampos ,
+                    usuariosDelete );
 
 
 

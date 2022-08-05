@@ -40,7 +40,8 @@ const usuarioSchema = new Schema({
 //! Para que no se muestre el password en la respuesta
 
 usuarioSchema.method('toJSON', function() {
-    const { __v, password, ...usuario } = this.toObject();
+    const { __v, password, _id, ...usuario } = this.toObject();
+    usuario.uID = _id;  // Cambiamos el nombre del id por uID
     return usuario;
 });
 
