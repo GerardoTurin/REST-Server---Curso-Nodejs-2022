@@ -1,12 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso Nodejs - Rest Server</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Curso Nodejs - Rest Server - Google Sing-in</title>
 </head>
+
 <body>
     <h1>Desde Index en carpeta Public</h1>
+    <hr />
+    <h2>Google Sing-in</h2>
+
+    <div
+        id="g_id_onload"
+        data-client_id="357058987521-fijffbjgreb5bco035f5forg10ue37o8.apps.googleusercontent.com"
+        data-auto_prompt="false"
+        data-callback="handleCredentialResponse"
+    ></div>
+    <div
+        class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left"
+    ></div>
+
+
+
+    <button id="google_signout">
+        SignOut
+    </button>
+
+
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        
+        // Credenciales de Google Sing-in
+
+        function handleCredentialResponse(response) {
+            const body = { id_token: response.credential };
+
+            fetch('http://localhost:8080/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    localStorage.setItem('email', data.usuario.email);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
+
+        const signoutButton = document.getElementById('google_signout');
+        signoutButton.onclick = () => {
+            console.log(google.accounts.id);
+
+            google.accounts.id.revoke( localStorage.getItem('email'), done => {
+                localStorage.removeItem('email');
+                location.reload();
+            } );
+        }
+
+
+    </script>
 </body>
 </html>
