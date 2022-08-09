@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import router from '../routes/userRoute.js';
 import routerAuth from '../routes/authRoute.js';
+import routerBuscar from '../routes/buscarRoute.js';
+import routerCategorias from '../routes/categoriasRoute.js';
+import routerProductos from '../routes/productosRoute.js';
 import { dbConection } from '../database/configDB.js';
 
 // Requests: Cuando el usuario hace una peticion
@@ -14,9 +17,15 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 3000;
+        
+        this.paths = {
+            authPath: '/api/auth',          // Creamos una ruta para el login ( autehtication )
+            buscarPath: '/api/buscar',      // Creamos una ruta para busqueda
+            categoriasPath: '/api/categorias',
+            productosPath: '/api/productos',
+            usuariosPath: '/api/usuarios',
+        }
 
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';    // Creamos una ruta para el login ( autehtication )
 
         //Coneccion a la base de datos
         this.conectarDB();
@@ -50,8 +59,11 @@ class Server {
 
     // Rutas de mi app
     routes() {
-        this.app.use( this.usuariosPath, router );
-        this.app.use( this.authPath, routerAuth );  // Definimos la ruta para el login ( autehtication )                    
+        this.app.use( this.paths.usuariosPath, router );
+        this.app.use( this.paths.buscarPath, routerBuscar );
+        this.app.use( this.paths.categoriasPath, routerCategorias );
+        this.app.use( this.paths.productosPath, routerProductos );
+        this.app.use( this.paths.authPath, routerAuth );  // Definimos la ruta para el login ( autehtication )                    
     }
 
     listen() {
