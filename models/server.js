@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 import router from '../routes/userRoute.js';
 import routerAuth from '../routes/authRoute.js';
 import routerBuscar from '../routes/buscarRoute.js';
 import routerCategorias from '../routes/categoriasRoute.js';
 import routerProductos from '../routes/productosRoute.js';
+import routerUploads from '../routes/uploadsRoute.js';
 import { dbConection } from '../database/configDB.js';
 
 // Requests: Cuando el usuario hace una peticion
@@ -24,6 +26,7 @@ class Server {
             categoriasPath: '/api/categorias',
             productosPath: '/api/productos',
             usuariosPath: '/api/usuarios',
+            uploadsPath: '/api/uploads',
         }
 
 
@@ -54,6 +57,15 @@ class Server {
 
         // Directorio carpeta publica
         this.app.use(express.static('public'));   // use: para usar un middleware
+
+        // File uploads - Carga de archivos
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath : true
+        }));
+
+
     }
 
 
@@ -64,6 +76,7 @@ class Server {
         this.app.use( this.paths.categoriasPath, routerCategorias );
         this.app.use( this.paths.productosPath, routerProductos );
         this.app.use( this.paths.authPath, routerAuth );  // Definimos la ruta para el login ( autehtication )                    
+        this.app.use( this.paths.uploadsPath, routerUploads );
     }
 
     listen() {

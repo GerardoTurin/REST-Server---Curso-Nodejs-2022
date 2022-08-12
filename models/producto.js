@@ -28,7 +28,8 @@ const productoSchema = new Schema({
         required: [true, 'La categoria es necesaria'],
     },
     description: { type: String },
-    disponible: { type: Boolean, default: true }
+    disponible: { type: Boolean, default: true },
+    img: { type: String }
 });
 
 

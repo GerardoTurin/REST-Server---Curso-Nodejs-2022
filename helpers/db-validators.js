@@ -109,6 +109,16 @@ const productoExistente = async (nombre = "", id) => {
 
 
 
+const coleccionesPermitidas = (coleccion = '', colecciones = []) => {
+    if (!colecciones.includes(coleccion)) {
+        throw new Error(`La colección ${coleccion} no está permitida, por favor seleccione una de las siguientes: ${colecciones}`);
+    }
+
+    return true;
+}
+
+
+
 export {
     roleValido,
     emailValido,
@@ -116,5 +126,6 @@ export {
     existeCategoria,
     categoriaExistente,
     existeProducto,
-    productoExistente
+    productoExistente,
+    coleccionesPermitidas
 }
